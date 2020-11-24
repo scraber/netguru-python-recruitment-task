@@ -25,7 +25,7 @@ SECRET_KEY = '@j+a!ch#-yv2f26&2ygls93b)j#1#ijdyrivh$%erxi-5kr_^d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -78,12 +78,12 @@ WSGI_APPLICATION = 'api_cars.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "api_cars",
-        "USER": "matt",
-        "PASSWORD": "xxx",
-        "HOST": "localhost",
-        "PORT": "",
+        'ENGINE': 'django.db.backends.postgresql',        
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "db",
+        "PORT": "5432",
     }
 }
 
