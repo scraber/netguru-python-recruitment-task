@@ -5,4 +5,11 @@ __pycache__/
 migrations/
 
 # Environments
-.env
+.env*
+venv-netguru
+
+# Local sqlite
+db.sqlite3
+
+# Work folders
+.vscode

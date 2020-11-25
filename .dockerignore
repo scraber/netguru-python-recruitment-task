@@ -1,0 +1,9 @@
+# Env files
+.env*
+
+# Local sqlite
+db.sqlite3
+
+# Work folders
+.git
+.vscode
