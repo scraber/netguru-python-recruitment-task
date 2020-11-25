@@ -1,7 +1,7 @@
 import json
 
 import requests
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -61,3 +61,11 @@ class CarAPIView(APIView):
                 data=f"Invalid Parameters",
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class CarPopularAPIView(APIView):
+    def get(self, request):
+        cars = Car.objects.annotate(rating_qty=Count("rate__rating")).order_by(
+            "-rating_qty"
+        )
+        return Response(cars.values())
