@@ -3,6 +3,7 @@ import json
 import requests
 from django.db.models import Avg, Count
 from django.db.models.functions import Coalesce
+from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -14,9 +15,9 @@ from .serializers import CarSerializer
 
 class CarAPIView(APIView):
     def get(self, request):
-        cars = Car.objects.annotate(average_rate=Coalesce(Avg("rate__rating"),0)).order_by(
-            "-average_rate"
-        )
+        cars = Car.objects.annotate(
+            average_rate=Coalesce(Avg("rate__rating"), 0)
+        ).order_by("-average_rate")
         return Response(cars.values())
 
     def post(self, request):
@@ -47,7 +48,13 @@ class CarAPIView(APIView):
                 if car.get("Model_Name").capitalize() == car_model.capitalize()
             ]
             if result:
-                serializer.save()
+                try:
+                    serializer.save()
+                except IntegrityError:
+                    return Response(
+                        data={"error": f"Car {car_make} {car_model} already exists!"},
+                        status=status.HTTP_409_CONFLICT,
+                    )
                 return Response(
                     data={"result": f"Added {car_make} {car_model} to database"},
                     status=status.HTTP_201_CREATED,
