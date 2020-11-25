@@ -15,10 +15,10 @@ class RateCarAPIView(APIView):
             rating = serializer.validated_data.get("rating")
             serializer.save()
             return Response(
-                data=f"Add: rating: {rating} for car: {car}",
+                data={"result ":f"Added rating: {rating} for car: {car}"},
                 status=status.HTTP_201_CREATED,
             )
         return Response(
-            data=f"{serializer.errors}",
+            data={"error": f"{serializer.errors}"},
             status=status.HTTP_400_BAD_REQUEST,
         )

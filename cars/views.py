@@ -2,6 +2,7 @@ import json
 
 import requests
 from django.db.models import Avg, Count
+from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -13,7 +14,7 @@ from .serializers import CarSerializer
 
 class CarAPIView(APIView):
     def get(self, request):
-        cars = Car.objects.annotate(average_rate=Avg("rate__rating")).order_by(
+        cars = Car.objects.annotate(average_rate=Coalesce(Avg("rate__rating"),0)).order_by(
             "-average_rate"
         )
         return Response(cars.values())
@@ -35,7 +36,7 @@ class CarAPIView(APIView):
                 req = requests.request("GET", url=api_url)
             except requests.exceptions.RequestException as e:
                 return Response(
-                    data=f"{e}", status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    data={"error": f"{e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
             if req.status_code != status.HTTP_200_OK:
                 return Response(req.reason, status=req.status_code)
@@ -48,17 +49,19 @@ class CarAPIView(APIView):
             if result:
                 serializer.save()
                 return Response(
-                    data=f"Add {car_make} {car_model} to database",
+                    data={"result": f"Added {car_make} {car_model} to database"},
                     status=status.HTTP_201_CREATED,
                 )
             else:
                 return Response(
-                    data=f"No matching result in external api for {car_make} {car_model}",
+                    data={
+                        "error": f"No matching result in external api for {car_make} {car_model}"
+                    },
                     status=status.HTTP_404_NOT_FOUND,
                 )
         else:
             return Response(
-                data=f"Invalid Parameters",
+                data={"error": f"Invalid Parameters"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
