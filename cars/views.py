@@ -1,11 +1,9 @@
-import json
-
 import requests
+from django.db import IntegrityError
 from django.db.models import Avg, Count
 from django.db.models.functions import Coalesce
-from django.db import IntegrityError
-from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,6 +12,8 @@ from .serializers import CarSerializer
 
 
 class CarAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request):
         cars = Car.objects.annotate(
             average_rate=Coalesce(Avg("rate__rating"), 0)
@@ -25,12 +25,6 @@ class CarAPIView(APIView):
         if serializer.is_valid():
             car_make = serializer.validated_data.get("make_name")
             car_model = serializer.validated_data.get("model_name")
-
-            # car = Car.objects.filter(make_name=car_make, model_name=car_model).first()
-            # if car:
-            #     return Response(
-            #         data=f"Car {car_make} {car_model} already exists in DB", status=status.HTTP_409_CONFLICT
-            #     )
 
             api_url = f"https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMake/{car_make}?format=json"
             try:
@@ -74,6 +68,8 @@ class CarAPIView(APIView):
 
 
 class CarPopularAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request):
         cars = Car.objects.annotate(rating_qty=Count("rate__rating")).order_by(
             "-rating_qty"

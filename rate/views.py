@@ -1,6 +1,5 @@
-from django.shortcuts import get_object_or_404
-from requests import api
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -8,6 +7,8 @@ from .serializers import RateSerializer
 
 
 class RateCarAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def post(self, request):
         serializer = RateSerializer(data=request.data)
         if serializer.is_valid():
@@ -15,7 +16,7 @@ class RateCarAPIView(APIView):
             rating = serializer.validated_data.get("rating")
             serializer.save()
             return Response(
-                data={"result ":f"Added rating: {rating} for car: {car}"},
+                data={"result ": f"Added rating: {rating} for car: {car}"},
                 status=status.HTTP_201_CREATED,
             )
         return Response(
