@@ -2,17 +2,20 @@
 
 Netguru python recruitment task is a simple REST API of basic cars makes and models written in Django with usage of external API
 
-
-# Run Locally
-
-## Prerequisites
+# Instance running on heroku
+>https://safe-mesa-73856.herokuapp.com/
+---
+# or run Locally
 
 ### Clone the source 
 
 ```sh
 git clone https://github.com/scraber/netguru-python-recruitment-task.git
-cd netguru-python-recruitment
+cd netguru-python-recruitment-task
 ```
+
+
+## Using Docker
 ### Make sure you have installed both docker and docker-compose
 
 1. Install [`docker`](https://docs.docker.com/get-docker/).
@@ -37,24 +40,24 @@ POSTGRES_DB=<db_name>
 ```
 
 
-
-Use docker-compose.yml to build 
+Use docker-compose to build 
 ```sh
-docker-compose -f docker-compose.yml up -d --build  
+docker-compose -f docker-compose.prod.yml up -d --build  
 ```
 Run initial migrations 
 ```sh
-docker-compose -f docker-compose.yml exec web python manage.py migrate --noinput
+docker-compose -f docker-compose.prod.yml exec web python manage.py migrate --noinput
 ```
 Create Django superuser (which you can use for token auth, later on)
 ```sh
-docker-compose -f docker-compose.yml exec web python manage.py createsuperuser
+docker-compose -f docker-compose.prod.yml exec web python manage.py createsuperuser
 ```
 
 ### Run tests
 ```sh
-docker-compose -f docker-compose.yml exec web python manage.py test
+docker-compose -f docker-compose.prod.yml exec web python manage.py test
 ```
+
 # Usage - available endpoints
 API uses Token Authentication, you can get token using test user credentials from
 >POST /api-token-auth/
