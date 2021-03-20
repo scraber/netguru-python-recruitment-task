@@ -2,10 +2,8 @@
 
 Netguru python recruitment task is a simple REST API of basic cars makes and models written in Django with usage of external API
 
-# Instance running on heroku
->https://safe-mesa-73856.herokuapp.com/
 ---
-# or run Locally
+# Run Locally
 
 ### Clone the source 
 
